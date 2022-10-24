@@ -18,7 +18,7 @@ Pages:
 
 ```go
 id := "tt1745960"
-bom, err := bom.Search(id) // Top Gun Maverick
+bom, err := boxofficemojo.Search(id) // Top Gun Maverick
 if err != nil {
     fmt.Printf("Error retrieving data from BoxOfficeMojo for movie id %s, Error: %s", id, err)
 }
