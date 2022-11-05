@@ -11,28 +11,26 @@ import (
 
 type BoxOfficeMojo struct {
 	//IMDB Identifier
-	Id string
+	Id string `json:"imdbId"`
 
 	//URL to BoxOfficeMojo for the Movie
-	Url string
+	Url string `json:"url"`
 
 	//# of US Theaters
-	UsaScreens int
+	UsaScreens int `json:"usaScreens"`
 	// URL to the page with US Theater information
-	UsaScreensUrl string
+	UsaScreensUrl string `json:"usaScreensUrl"`
 
 	//# of UK Theaters
-	UkScreens int
+	UkScreens int `json:"ukScreens"`
 	// URL to the page with UK Theater information
-	UKScreensUrl string
+	UKScreensUrl string `json:"ukScreensUrl"`
 }
 
 // Searches and Parse BoxOfficeMojo to retrieve the # of theaters for a movie based on its IMDB identifier.
 // Will return an error when the movie does not have screen data and screens will be defaulted to zero as a safe value.
 func Search(id string) (BoxOfficeMojo, error) {
-
 	moviePageUrl := getBomUrl(id)
-	// fmt.Println("Movie Page url ", moviePageUrl)
 
 	// Retrieve Page #1 - Movie Details
 	rg, err := getReleaseGroupUrl(moviePageUrl)
@@ -42,7 +40,6 @@ func Search(id string) (BoxOfficeMojo, error) {
 			Url: moviePageUrl,
 		}, err
 	}
-	// fmt.Println("Release group url ", rg)
 
 	// Retrieve Page #2 - Summary of Original Release - Extract Domestic page URL
 	domesticUrl, err := getDomesticUrl(rg)
@@ -70,11 +67,12 @@ func Search(id string) (BoxOfficeMojo, error) {
 	}, nil
 }
 
+// getBomUrl returns the BoxOffice Mojo URL for a specific IMDB Id
 func getBomUrl(id string) string {
 	return fmt.Sprintf("https://www.boxofficemojo.com/title/%s", id)
 }
 
-// Retrieve and parse web page for the movie to extract the URL to the Box Office details
+// getReleaseGroupUrl Retrieve and parse web page for the movie to extract the URL to the Box Office details
 func getReleaseGroupUrl(moviePageUrl string) (string, error) {
 
 	res, err := http.Get(moviePageUrl)
@@ -132,7 +130,7 @@ func getDomesticUrl(url string) (string, error) {
 
 }
 
-// Parse HTML page to extract the # of screens
+// extractScreens Scrape HTML page to extract the # of screens
 func extractScreens(url string) (int, error) {
 	res, err := http.Get(url)
 	if err != nil {
